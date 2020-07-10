@@ -17,6 +17,7 @@ COLOR_STATES = [(200, 200, 0), (200, 150, 0), (200, 100, 0), (200, 50, 0), (200,
 
 
 class Gridworld:
+    """ MDP Environment """
     def __init__(self, path, gamma, reward, theta):
         self.grid = self.__load_grid(path)
         self.values = np.zeros(self.grid.shape)
@@ -27,14 +28,25 @@ class Gridworld:
         self.theta = theta
 
     def __repr__(self):
+        """ Print values for each cell """
         return self.values
 
     def __load_grid(self, path):
+        """
+        Loads the grid stored in path.
+
+        Args:
+            path (str): Path to txt file with the gridworld.
+
+        Returns:
+            np.array: Loaded grid.
+        """
         with open(path, 'r') as file:
             grid = [line.strip().split(',') for line in file]
         return np.array(grid)
 
     def draw(self, screen, font):
+        """ Draws gridworld and values for each cell. """
         for row in range(self.rows):
             for column in range(self.columns):
                 current_value = self.values[row][column]
@@ -75,6 +87,7 @@ class Gridworld:
                                            (WIDTH + MARGIN) * row + MARGIN + 13))
 
     def run(self):
+        """ Run the policy evaluation in the gridworld """
         new_values = np.zeros(self.values.shape)
         for row in range(self.rows):
             for column in range(self.columns):
