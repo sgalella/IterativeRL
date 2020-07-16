@@ -1,19 +1,16 @@
+import argparse
 import matplotlib.pyplot as plt
 import numpy as np
 from utils import draw_arrows
 
 
-GAMMA = 1
-THETA = 0.001
-
 WIDTH = 50
 MARGIN = 2
 
 KEY_TO_ACTION = {'U': (-1, 0), 'D': (1, 0), 'L': (0, -1), 'R': (0, 1)}
-GOALS = [(0, 0), (3, 3)]
 
-MIN_VALUE = -50
-MAX_VALUE = 50
+MIN_VALUE = -100
+MAX_VALUE = 100
 CMAP_VALUE = plt.cm.jet
 CMAP_VALUE.set_bad("black")
 CMAP_POLICY = plt.cm.gray_r
@@ -26,11 +23,11 @@ def load_grid(path):
     return np.array(grid)
 
 
-def run_policy_evaluation(grid, values, policy):
+def run_policy_evaluation(grid, values, policy, gamma, theta, goals):
     new_values = np.zeros(values.shape)
     for row in range(new_values.shape[0]):
         for column in range(new_values.shape[1]):
-            if (row, column) not in GOALS:
+            if (row, column) not in goals:
                 actions = policy[row][column]
                 p = 1 / len(actions)
                 for action in actions:
@@ -38,15 +35,15 @@ def run_policy_evaluation(grid, values, policy):
                     next_row = row + action_row
                     next_col = column + action_column
                     if next_row < 0 or next_col < 0 or next_row >= new_values.shape[0] or next_col >= new_values.shape[1]:
-                        new_values[row][column] += p * (grid[row][column] + GAMMA * values[row][column])
+                        new_values[row][column] += p * (grid[row][column] + gamma * values[row][column])
                     else:
-                        new_values[row][column] += p * (grid[next_row][next_col] + GAMMA * values[next_row][next_col])
+                        new_values[row][column] += p * (grid[next_row][next_col] + gamma * values[next_row][next_col])
     delta = np.max(abs(new_values - values))
     values = new_values
-    return (values, delta < THETA)
+    return (values, delta < theta)
 
 
-def get_max_neighbors(values, row, column):
+def get_max_neighbors(grid, values, gamma, row, column):
     value_neighbors = np.zeros((4, ))
     for idx, action in enumerate("UDLR"):
         action_row, action_column = KEY_TO_ACTION[action]
@@ -55,17 +52,17 @@ def get_max_neighbors(values, row, column):
         if next_row < 0 or next_col < 0 or next_row >= values.shape[0] or next_col >= values.shape[1]:
             value_neighbors[idx] = -np.inf
         else:
-            value_neighbors[idx] = grid[next_row][next_col] + GAMMA * values[next_row][next_col]
+            value_neighbors[idx] = grid[next_row][next_col] + gamma * values[next_row][next_col]
     return (value_neighbors == np.nanmax(value_neighbors)).astype(int).tolist()
 
 
-def run_policy_improvement(values):
+def run_policy_improvement(grid, values, gamma, goals):
     new_policy = np.zeros(values.shape, dtype=object)
     for row in range(new_policy.shape[0]):
         for column in range(new_policy.shape[1]):
-            if (row, column) not in GOALS:
+            if (row, column) not in goals:
                 policy_neighbors = ""
-                max_neighbors = get_max_neighbors(values, row, column)
+                max_neighbors = get_max_neighbors(grid, values, gamma, row, column)
                 up, down, left, right = max_neighbors
                 if up:
                     policy_neighbors += "U"
@@ -83,10 +80,10 @@ def initialize_initial_values(grid):
     return np.zeros(grid.shape)
 
 
-def initialize_random_policy(grid):
+def initialize_random_policy(grid, goals):
     policy = np.zeros(grid.shape, dtype=object)
     policy[policy == 0] = "UDLR"
-    for (row, column) in GOALS:
+    for (row, column) in goals:
         policy[row][column] = ''
     return policy
 
@@ -115,12 +112,12 @@ def plot_state_values(ax, values, iteration):
     plt.draw()
 
 
-def plot_policy(ax, policy, iteration):
+def plot_policy(ax, policy, iteration, goals):
     background = np.zeros(policy.shape)
     ax.imshow(background, cmap=CMAP_POLICY)
     for row in range(policy.shape[0]):
         for column in range(policy.shape[1]):
-            if (row, column) not in GOALS:
+            if (row, column) not in goals:
                 draw_arrows(ax, policy[row][column], column, row)
     ax.set_title(r"$\Pi_{" + str(iteration) + "}$")
     ax.grid(color="black", linewidth=1)
@@ -129,25 +126,31 @@ def plot_policy(ax, policy, iteration):
     plt.draw()
 
 
-def main():
-    has_converged = False
+def main(parameters):
+    gamma = parameters["gamma"]
+    theta = parameters["theta"]
+    goals = parameters["goals"]
+    grid = load_grid(parameters["filename"])
+
+    has_converged = False  # Checks if policy evaluation has converged
     iteration = 0
     state_values = initialize_initial_values(grid)
-    policy = initialize_random_policy(grid)
+    policy = initialize_random_policy(grid, goals)
+
     # Initial plot
     plt.ion()
     fig, ax = plt.subplots(1, 3, figsize=(8, 4))
     plot_gridworld(ax[0], grid)
     plot_state_values(ax[1], state_values, iteration)
-    plot_policy(ax[2], policy, iteration)
+    plot_policy(ax[2], policy, iteration, goals)
     while True:
         if not has_converged:
-            state_values, has_converged = run_policy_evaluation(grid, state_values, policy)
+            state_values, has_converged = run_policy_evaluation(grid, state_values, policy, gamma, theta, goals)
             ax[1].cla()
             plot_state_values(ax[1], state_values, iteration)
-            plt.pause(0.01)
+            plt.pause(0.001)
         else:
-            new_policy = run_policy_improvement(state_values)
+            new_policy = run_policy_improvement(grid, state_values, gamma, goals)
             if (new_policy == policy).all():
                 break
             policy = new_policy
@@ -155,13 +158,33 @@ def main():
             has_converged = False
             ax[2].cla()
             iteration += 1
-            plot_policy(ax[2], policy, iteration)
+            plot_policy(ax[2], policy, iteration, goals)
             plt.pause(1)
     plt.ioff()
     plt.show()
 
 
 if __name__ == "__main__":
-    filename = "examples/example1.txt"
-    grid = load_grid(filename)
-    main()
+    parser = argparse.ArgumentParser(description="Policy iteration for gridworld.")
+    parser.add_argument("filename", help="Path to the gridworld file")
+    parser.add_argument("goals", help="Goal positions in gridworld", type=int, nargs="*")
+    parser.add_argument("-g", "--gamma", help="Discount factor", type=float, default=0.9)
+    parser.add_argument("-t", "--theta", help="Convergence parameter", type=float, default=0.001)
+    parser.add_argument("-v", "--verbose", help="Print run information", action="store_true")
+    args = parser.parse_args()
+
+    # Group arguments to pass to the main function
+    params = {
+        "filename": args.filename,
+        "gamma": args.gamma,
+        "theta": args.theta,
+        "goals": [tuple(args.goals[pos:pos + 2]) for pos in range(0, len(args.goals), 2)],
+    }
+
+    if args.verbose:
+        print(f"Filename: {params['filename']}")
+        print(f"Goals: {params['goals']}")
+        print(f"Gamma: {params['gamma']}")
+        print(f"Theta: {params['theta']}")
+
+    main(params)
