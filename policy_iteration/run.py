@@ -121,7 +121,7 @@ def plot_policy(ax, policy, iteration, goals):
         for column in range(policy.shape[1]):
             if (row, column) not in goals:
                 draw_arrows(ax, policy[row][column], column, row)
-    ax.set_title(r"$\Pi_{" + str(iteration) + "}$")
+    ax.set_title(f"$\Pi_{{{iteration}}}$")
     ax.grid(color="black", linewidth=1)
     ax.set_xticks([])
     ax.set_yticks([])
@@ -162,6 +162,8 @@ def main(parameters):
             iteration += 1
             plot_policy(ax[2], policy, iteration, goals)
             plt.pause(1)
+    ax[1].set_title(f"$V_{{{iteration}}} = V_{{*}}$")
+    ax[2].set_title(f"$\Pi_{{{iteration}}} = \Pi_{{*}}$")
     plt.ioff()
     plt.show()
 
