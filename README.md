@@ -2,9 +2,8 @@
 Policy iteration for gridworld starting with a random policy.
 
 <p align="center">
-    <img width="522" height="275" src="images/policy_iteration.gif">
+    <img width="580" height="237" src="images/policy_iteration.gif">
 </p>
-
 
 
 
