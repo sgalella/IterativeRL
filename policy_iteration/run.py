@@ -3,8 +3,7 @@ import numpy as np
 from utils import draw_arrows
 
 
-GAMMA = 0.9
-REWARD = -1
+GAMMA = 1
 THETA = 0.001
 
 WIDTH = 50
@@ -41,7 +40,7 @@ def run_policy_evaluation(grid, values, policy):
                     if next_row < 0 or next_col < 0 or next_row >= new_values.shape[0] or next_col >= new_values.shape[1]:
                         new_values[row][column] += p * (grid[row][column] + GAMMA * values[row][column])
                     else:
-                        new_values[row][column] += p * (grid[row][column] + GAMMA * values[next_row][next_col])
+                        new_values[row][column] += p * (grid[next_row][next_col] + GAMMA * values[next_row][next_col])
     delta = np.max(abs(new_values - values))
     values = new_values
     return (values, delta < THETA)
@@ -56,7 +55,7 @@ def get_max_neighbors(values, row, column):
         if next_row < 0 or next_col < 0 or next_row >= values.shape[0] or next_col >= values.shape[1]:
             value_neighbors[idx] = -np.inf
         else:
-            value_neighbors[idx] = values[next_row][next_col]
+            value_neighbors[idx] = grid[next_row][next_col] + GAMMA * values[next_row][next_col]
     return (value_neighbors == np.nanmax(value_neighbors)).astype(int).tolist()
 
 
