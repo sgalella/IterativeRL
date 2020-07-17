@@ -124,7 +124,7 @@ def draw_arrows(ax, policy, row, column):
         draw_arrow_D(ax, row, column)
         draw_arrow_L(ax, row, column)
         draw_arrow_R(ax, row, column)
-    else:
+    elif policy == "UDLR":
         draw_arrow_U(ax, row, column)
         draw_arrow_D(ax, row, column)
         draw_arrow_L(ax, row, column)

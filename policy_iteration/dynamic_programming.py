@@ -37,6 +37,38 @@ def policy_evaluation(grid, values, policy, gamma, theta, goals):
     return (values, delta < theta)
 
 
+def value_iteration(grid, values, policy, gamma, theta, goals):
+    """
+    Runs one sweep of policy evaluation for value iteration.
+
+    Args:
+        grid (np.array): Rewards at each position.
+        values (np.array): Values at each position.
+        policy (np.array): Policy at each position.
+        gamma (float): Discount factor.
+        theta (float): Convergence criteria.
+        goals (list): Goal positions in the grid.
+
+    Returns:
+        tuple: Contains next state-values and convergence boolean.
+    """
+    new_values = np.zeros(values.shape)
+    for row in range(new_values.shape[0]):
+        for column in range(new_values.shape[1]):
+            neighbor_values = []
+            if (row, column) not in goals:
+                for (action_row, action_column) in KEY_TO_ACTION.values():
+                    next_row = row + action_row
+                    next_col = column + action_column
+                    if next_row < 0 or next_col < 0 or next_row >= new_values.shape[0] or next_col >= new_values.shape[1]:
+                        neighbor_values.append(grid[row][column] + gamma * values[row][column])
+                    else:
+                        neighbor_values.append(grid[next_row][next_col] + gamma * values[next_row][next_col])
+                new_values[row][column] = max(neighbor_values)
+    delta = np.max(abs(new_values - values))
+    return (new_values, delta < theta)
+
+
 def get_max_neighbors(grid, values, gamma, row, column):
     """
     Gets neighbors positions with highest value.
@@ -95,9 +127,9 @@ def policy_improvement(grid, values, gamma, goals):
     return new_policy
 
 
-def initial_values(grid):
+def zero_values(grid):
     """
-    Initializes the state-values array.
+    Sets the state-values array to 0.
 
     Args:
         grid (np.array): Rewards at each position.

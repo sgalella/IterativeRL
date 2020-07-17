@@ -1,6 +1,6 @@
 import argparse
 import matplotlib.pyplot as plt
-from dynamic_programming import policy_evaluation, policy_improvement, initial_values, random_policy
+from dynamic_programming import policy_evaluation, policy_improvement, zero_values, random_policy
 from utils import load_grid
 from plots import plot_gridworld, plot_state_values, plot_policy
 
@@ -23,7 +23,7 @@ def main(parameters):
 
     has_converged = False  # Checks if policy evaluation has converged
     iteration = 0
-    state_values = initial_values(grid)
+    state_values = zero_values(grid)
     policy = random_policy(grid, goals)
 
     # Initial plot
@@ -43,7 +43,7 @@ def main(parameters):
             if (new_policy == policy).all():
                 break
             policy = new_policy
-            state_values = initial_values(grid)
+            state_values = zero_values(grid)
             has_converged = False
             ax[2].cla()
             iteration += 1
