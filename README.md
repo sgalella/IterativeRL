@@ -1,5 +1,5 @@
-# Policy Iteration
-Policy iteration for gridworld starting with a random policy.
+# Generalized Policy Iteration
+Policy iteration and value iteration for gridworld.
 
 <p align="center">
     <img width="580" height="237" src="images/policy_iteration.gif">
@@ -22,10 +22,10 @@ pip install -r requirements.txt
 The current code uses `example1.txt` from `/examples`. To use another gridworld, change the path in `run.py`. Then, run the following command:
 
 ```
-python policy_iteration/run.py filename goal
+python run_file filename goal
 ```
 
-Where `filename` represents the path to a grid containing the rewards at each position e.g. `examples/example1.txt`, and `goal`, the coordinates of the end state e.g. `0 0` for position (0, 0). For multiple goal states, concatenate the coordinates e.g.,  `0 0 3 3` for positions (0, 0) and (3, 3):
+Where `run_file`, denotes `run_policy.py` for *policy iteration* and `run_value.py` for value iteration. `filename` represents the path to a grid containing the rewards at each position e.g. `examples/example1.txt`, and `goal`, the coordinates of the end state e.g. `0 0` for position (0, 0). For multiple goal states, concatenate the coordinates e.g.,  `0 0 3 3` for positions (0, 0) and (3, 3):
 
 ```
 python policy_iteration/run.py examples/example1.txt 0 0 3 3
