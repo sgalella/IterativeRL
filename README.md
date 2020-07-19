@@ -1,9 +1,19 @@
 # Generalized Policy Iteration
 Policy iteration and value iteration for gridworld.
 
+#### Policy Iteration
+
 <p align="center">
     <img width="580" height="237" src="images/policy_iteration.gif">
 </p>
+
+
+#### Value Iteration
+
+<p align="center">
+    <img width="580" height="237" src="images/value_iteration.gif">
+</p>
+
 
 
 
