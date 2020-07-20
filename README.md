@@ -35,7 +35,7 @@ The current code uses `example1.txt` from `/examples`. To use another gridworld,
 python run_file filename goal
 ```
 
-Where `run_file`, denotes `run_policy.py` for *policy iteration* and `run_value.py` for value iteration. `filename` represents the path to a grid containing the rewards at each position e.g. `examples/example1.txt`, and `goal`, the coordinates of the end state e.g. `0 0` for position (0, 0). For multiple goal states, concatenate the coordinates e.g.,  `0 0 3 3` for positions (0, 0) and (3, 3):
+Where `run_file`, denotes `run_policy.py` for *policy iteration* and `run_value.py` for value iteration. `filename` represents the path to a grid containing the rewards at each position. Check the different examples in `examples/`. Blocked states are represented by any character other than numbers. `goal` corresponds to the coordinates of the end state e.g. `0 0` for position (0, 0). For multiple goal states, concatenate the coordinates e.g.,  `0 0 3 3` for positions (0, 0) and (3, 3):
 
 ```
 python policy_iteration/run.py examples/example1.txt 0 0 3 3
