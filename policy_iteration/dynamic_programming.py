@@ -18,21 +18,22 @@ def policy_evaluation(grid, values, policy, gamma, theta, goals):
     Returns:
         tuple: Contains next state-values and convergence boolean.
     """
-    new_values = np.zeros(values.shape)
+    new_values = zero_values(grid)
     for row in range(new_values.shape[0]):
         for column in range(new_values.shape[1]):
-            if (row, column) not in goals:
+            if (row, column) not in goals and not np.isnan(values[row][column]):
                 actions = policy[row][column]
                 p = 1 / len(actions)
                 for action in actions:
                     action_row, action_column = KEY_TO_ACTION[action]
                     next_row = row + action_row
                     next_col = column + action_column
-                    if next_row < 0 or next_col < 0 or next_row >= new_values.shape[0] or next_col >= new_values.shape[1]:
+                    if (next_row < 0 or next_col < 0 or next_row >= new_values.shape[0] or next_col >= new_values.shape[1]
+                            or np.isnan(values[next_row][next_col])):
                         new_values[row][column] += p * (grid[row][column] + gamma * values[row][column])
                     else:
                         new_values[row][column] += p * (grid[next_row][next_col] + gamma * values[next_row][next_col])
-    delta = np.max(abs(new_values - values))
+    delta = np.nanmax(abs(new_values - values))
     values = new_values
     return (values, delta < theta)
 
@@ -52,20 +53,21 @@ def value_iteration(grid, values, policy, gamma, theta, goals):
     Returns:
         tuple: Contains next state-values and convergence boolean.
     """
-    new_values = np.zeros(values.shape)
+    new_values = zero_values(grid)
     for row in range(new_values.shape[0]):
         for column in range(new_values.shape[1]):
             neighbor_values = []
-            if (row, column) not in goals:
+            if (row, column) not in goals and not np.isnan(values[row][column]):
                 for (action_row, action_column) in KEY_TO_ACTION.values():
                     next_row = row + action_row
                     next_col = column + action_column
-                    if next_row < 0 or next_col < 0 or next_row >= new_values.shape[0] or next_col >= new_values.shape[1]:
+                    if (next_row < 0 or next_col < 0 or next_row >= new_values.shape[0] or next_col >= new_values.shape[1]
+                            or np.isnan(values[next_row][next_col])):
                         neighbor_values.append(grid[row][column] + gamma * values[row][column])
                     else:
                         neighbor_values.append(grid[next_row][next_col] + gamma * values[next_row][next_col])
-                new_values[row][column] = max(neighbor_values)
-    delta = np.max(abs(new_values - values))
+                new_values[row][column] = np.nanmax(neighbor_values)
+    delta = np.nanmax(abs(new_values - values))
     return (new_values, delta < theta)
 
 
@@ -88,7 +90,8 @@ def get_max_neighbors(grid, values, gamma, row, column):
         action_row, action_column = KEY_TO_ACTION[action]
         next_row = row + action_row
         next_col = column + action_column
-        if next_row < 0 or next_col < 0 or next_row >= values.shape[0] or next_col >= values.shape[1]:
+        if (next_row < 0 or next_col < 0 or next_row >= values.shape[0] or next_col >= values.shape[1]
+                or np.isnan(values[next_row][next_col])):
             value_neighbors[idx] = -np.inf
         else:
             value_neighbors[idx] = grid[next_row][next_col] + gamma * values[next_row][next_col]
@@ -111,7 +114,7 @@ def policy_improvement(grid, values, gamma, goals):
     new_policy = np.zeros(values.shape, dtype=object)
     for row in range(new_policy.shape[0]):
         for column in range(new_policy.shape[1]):
-            if (row, column) not in goals:
+            if (row, column) not in goals and not np.isnan(values[row][column]):
                 policy_neighbors = ""
                 max_neighbors = get_max_neighbors(grid, values, gamma, row, column)
                 up, down, left, right = max_neighbors
@@ -137,7 +140,9 @@ def zero_values(grid):
     Returns:
         np.arrays: Arrays of zeros.
     """
-    return np.zeros(grid.shape)
+    values = np.zeros(grid.shape)
+    values[np.isnan(grid)] = np.nan
+    return values
 
 
 def random_policy(grid, goals):
@@ -155,4 +160,5 @@ def random_policy(grid, goals):
     policy[policy == 0] = "UDLR"
     for (row, column) in goals:
         policy[row][column] = ''
+    policy[np.isnan(grid)] = ''
     return policy

@@ -25,7 +25,8 @@ def plot_gridworld(ax, grid):
     ax.imshow(grid, cmap=CMAP_VALUE, vmin=MIN_VALUE, vmax=MAX_VALUE)
     for row in range(grid.shape[0]):
         for column in range(grid.shape[1]):
-            ax.text(column, row, f"{grid[row][column]:.1f}", va="center", ha="center", color="black", fontsize=12)
+            if grid[row][column] != "*":
+                ax.text(column, row, f"{grid[row][column]:.1f}", va="center", ha="center", color="black", fontsize=12)
     ax.set_title("$R$")
     ax.grid(color="black", linewidth=1)
     ax.set_xticks([])
@@ -45,9 +46,10 @@ def plot_state_values(ax, values, iteration):
     ax.imshow(values, cmap=CMAP_VALUE, vmin=MIN_VALUE, vmax=MAX_VALUE)
     for row in range(values.shape[1]):
         for column in range(values.shape[1]):
-            color = "black" if MIN_VALUE < values[row][column] < MAX_VALUE else "white"
-            fontsize = 12 if MIN_VALUE < values[row][column] < MAX_VALUE else 8
-            ax.text(column, row, f"{values[row][column]:.1f}", va="center", ha="center", color=color, fontsize=fontsize)
+            if not np.isnan(values[row][column]):
+                color = "black" if MIN_VALUE < values[row][column] < MAX_VALUE else "white"
+                fontsize = 12 if MIN_VALUE < values[row][column] < MAX_VALUE else 8
+                ax.text(column, row, f"{values[row][column]:.1f}", va="center", ha="center", color=color, fontsize=fontsize)
     ax.set_title(f"$V_{{{iteration}}}$")
     ax.grid(color="black", linewidth=1)
     ax.set_xticks([])
