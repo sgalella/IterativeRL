@@ -28,9 +28,13 @@ def plot_gridworld(ax, grid):
             if grid[row][column] != "*":
                 ax.text(column, row, f"{grid[row][column]:.1f}", va="center", ha="center", color="black", fontsize=12)
     ax.set_title("$R$")
-    ax.grid(color="black", linewidth=1)
-    ax.set_xticks([])
-    ax.set_yticks([])
+    ax.set_xticks(np.arange(-0.5, len(grid), 1), minor=True)
+    ax.set_yticks(np.arange(-0.5, len(grid[0]), 1), minor=True)
+    ax.set_xticklabels([])
+    ax.set_yticklabels([])
+    ax.grid(which="minor", color="black", linewidth=1)
+    ax.xaxis.set_ticks_position("none")
+    ax.yaxis.set_ticks_position("none")
     plt.draw()
 
 
@@ -51,9 +55,13 @@ def plot_state_values(ax, values, iteration):
                 fontsize = 12 if MIN_VALUE < values[row][column] < MAX_VALUE else 8
                 ax.text(column, row, f"{values[row][column]:.1f}", va="center", ha="center", color=color, fontsize=fontsize)
     ax.set_title(f"$V_{{{iteration}}}$")
-    ax.grid(color="black", linewidth=1)
-    ax.set_xticks([])
-    ax.set_yticks([])
+    ax.set_xticks(np.arange(-0.5, len(values), 1), minor=True)
+    ax.set_yticks(np.arange(-0.5, len(values[0]), 1), minor=True)
+    ax.set_xticklabels([])
+    ax.set_yticklabels([])
+    ax.grid(which="minor", color="black", linewidth=1)
+    ax.xaxis.set_ticks_position("none")
+    ax.yaxis.set_ticks_position("none")
     plt.draw()
 
 
@@ -76,9 +84,13 @@ def plot_policy(ax, policy, iteration, goals):
             if (row, column) not in goals:
                 draw_arrows(ax, policy[row][column], column, row)
     ax.set_title(r"$\Pi_{" + str(iteration) + "}$")
-    ax.grid(color="black", linewidth=1)
-    ax.set_xticks([])
-    ax.set_yticks([])
+    ax.set_xticks(np.arange(-0.5, len(policy), 1), minor=True)
+    ax.set_yticks(np.arange(-0.5, len(policy[0]), 1), minor=True)
+    ax.set_xticklabels([])
+    ax.set_yticklabels([])
+    ax.grid(which="minor", color="black", linewidth=1)
+    ax.xaxis.set_ticks_position("none")
+    ax.yaxis.set_ticks_position("none")
     plt.draw()
 
 

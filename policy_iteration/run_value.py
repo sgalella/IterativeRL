@@ -1,7 +1,7 @@
 import argparse
 import matplotlib.pyplot as plt
 import numpy as np
-from dynamic_programming import value_iteration, policy_improvement, zero_values, random_policy
+from dynamic_programming import value_iteration, policy_improvement, zero_values
 from utils import load_grid
 from plots import plot_gridworld, plot_state_values, plot_policy
 
