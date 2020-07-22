@@ -23,13 +23,14 @@ def plot_gridworld(ax, grid):
         grid (np.array): Rewards at each position.
     """
     ax.imshow(grid, cmap=CMAP_VALUE, vmin=MIN_VALUE, vmax=MAX_VALUE)
+    print(len(grid), len(grid[0]))
     for row in range(grid.shape[0]):
         for column in range(grid.shape[1]):
             if grid[row][column] != "*":
                 ax.text(column, row, f"{grid[row][column]:.1f}", va="center", ha="center", color="black", fontsize=12)
     ax.set_title("$R$")
-    ax.set_xticks(np.arange(-0.5, len(grid), 1), minor=True)
-    ax.set_yticks(np.arange(-0.5, len(grid[0]), 1), minor=True)
+    ax.set_xticks(np.arange(-0.5, len(grid[0]), 1), minor=True)
+    ax.set_yticks(np.arange(-0.5, len(grid), 1), minor=True)
     ax.set_xticklabels([])
     ax.set_yticklabels([])
     ax.grid(which="minor", color="black", linewidth=1)
@@ -48,15 +49,15 @@ def plot_state_values(ax, values, iteration):
         iteration (int): Current step of policy improvement.
     """
     ax.imshow(values, cmap=CMAP_VALUE, vmin=MIN_VALUE, vmax=MAX_VALUE)
-    for row in range(values.shape[1]):
+    for row in range(values.shape[0]):
         for column in range(values.shape[1]):
             if not np.isnan(values[row][column]):
                 color = "black" if MIN_VALUE < values[row][column] < MAX_VALUE else "white"
                 fontsize = 12 if MIN_VALUE < values[row][column] < MAX_VALUE else 8
                 ax.text(column, row, f"{values[row][column]:.1f}", va="center", ha="center", color=color, fontsize=fontsize)
     ax.set_title(f"$V_{{{iteration}}}$")
-    ax.set_xticks(np.arange(-0.5, len(values), 1), minor=True)
-    ax.set_yticks(np.arange(-0.5, len(values[0]), 1), minor=True)
+    ax.set_xticks(np.arange(-0.5, len(values[0]), 1), minor=True)
+    ax.set_yticks(np.arange(-0.5, len(values), 1), minor=True)
     ax.set_xticklabels([])
     ax.set_yticklabels([])
     ax.grid(which="minor", color="black", linewidth=1)
@@ -84,8 +85,8 @@ def plot_policy(ax, policy, iteration, goals):
             if (row, column) not in goals:
                 draw_arrows(ax, policy[row][column], column, row)
     ax.set_title(r"$\Pi_{" + str(iteration) + "}$")
-    ax.set_xticks(np.arange(-0.5, len(policy), 1), minor=True)
-    ax.set_yticks(np.arange(-0.5, len(policy[0]), 1), minor=True)
+    ax.set_xticks(np.arange(-0.5, len(policy[0]), 1), minor=True)
+    ax.set_yticks(np.arange(-0.5, len(policy), 1), minor=True)
     ax.set_xticklabels([])
     ax.set_yticklabels([])
     ax.grid(which="minor", color="black", linewidth=1)
