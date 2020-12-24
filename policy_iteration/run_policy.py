@@ -1,9 +1,10 @@
 import argparse
-import matplotlib.pyplot as plt
-from dynamic_programming import policy_evaluation, policy_improvement, zero_values, random_policy
-from utils import load_grid
-from plots import plot_gridworld, plot_state_values, plot_policy
 
+import matplotlib.pyplot as plt
+
+from algorithms import policy_evaluation, policy_improvement, zero_values, random_policy
+from utils import load_grid
+from visualization import plot_gridworld, plot_state_values, plot_policy
 
 WIDTH = 50
 MARGIN = 2
