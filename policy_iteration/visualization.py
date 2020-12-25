@@ -23,7 +23,6 @@ def plot_gridworld(ax, grid):
         grid (np.array): Rewards at each position.
     """
     ax.imshow(grid, cmap=CMAP_VALUE, vmin=MIN_VALUE, vmax=MAX_VALUE)
-    print(len(grid), len(grid[0]))
     for row in range(grid.shape[0]):
         for column in range(grid.shape[1]):
             if grid[row][column] != "*":
