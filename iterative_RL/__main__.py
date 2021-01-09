@@ -3,9 +3,9 @@ import argparse
 import matplotlib.pyplot as plt
 import numpy as np
 
-import algorithms as al
-from utils import load_grid
-from visualization import plot_gridworld, plot_state_values, plot_policy
+from . import algorithms as al
+from .utils import load_grid
+from .visualization import plot_gridworld, plot_state_values, plot_policy
 
 
 WIDTH = 50
@@ -15,7 +15,7 @@ MARGIN = 2
 parser = argparse.ArgumentParser(description="Policy iteration for gridworld.")
 parser.add_argument("filename", help="Path to the gridworld file")
 parser.add_argument("goals", help="Goal positions in gridworld", type=int, nargs="*")
-parser.add_argument("-m", "--method", help="Iteration method", type=str, default='policy')
+parser.add_argument("-m", "--method", help="Iterative method to find the best policy", type=str, default='Policy')
 parser.add_argument("-g", "--gamma", help="Discount factor", type=float, default=0.9)
 parser.add_argument("-t", "--theta", help="Convergence parameter", type=float, default=0.001)
 parser.add_argument("-v", "--verbose", help="Print run information", action="store_true")
@@ -24,7 +24,7 @@ args = parser.parse_args()
 filename = args.filename
 gamma = args.gamma
 goals = [tuple(args.goals[pos:pos + 2]) for pos in range(0, len(args.goals), 2)]
-method = 'Value Iteration' if args.method.lower() == 'value' else 'Policy Iteration'
+method = 'Value Iteration' if args.method.lower() == 'Value' else 'Policy Iteration'
 theta = args.theta
 
 if args.verbose:
