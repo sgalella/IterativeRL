@@ -40,13 +40,13 @@ conda activate iterative-RL
 The current code uses `example1.txt` from `/examples`. To use another gridworld, change the path in `run.py`. Then, run the following command:
 
 ```bash
-python iterative_RL filename goal
+python -m iterative_RL filename goal
 ```
 
 Check the different examples in `examples/`. Blocked states are represented by any character other than numbers. `goal` corresponds to the coordinates of the end state e.g. `0 0` for position (0, 0). For multiple goal states, concatenate the coordinates e.g.,  `0 0 3 3` for positions (0, 0) and (3, 3). For example, to visualize value iteration:
 
 ```bash
-python iterative_RL examples/example1.txt 0 0 3 3 --method value
+python -m iterative_RL examples/example1.txt 0 0 3 3 --method value
 ```
 
 Additionally, you can change other parameters by adding the corresponding flag and value:
