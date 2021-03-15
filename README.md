@@ -1,5 +1,5 @@
 # Iterative RL
-Implementation of iterative methods in [Reinforcement Learning](https://en.wikipedia.org/wiki/Reinforcement_learning), including Policy and Value Iteration.
+Implementation Policy and Value Iteration iterative methods described in the fourth chapter of [Reinforcement Learning](http://incompleteideas.net/book/the-book.html).
 
 #### Policy Iteration
 
